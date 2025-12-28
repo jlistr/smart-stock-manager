@@ -12,6 +12,13 @@ This is a focused inventory tracking tool with CRUD operations, filtering, and b
 
 ## Essential Features
 
+### User Authentication
+- **Functionality**: Simple login screen with username/password authentication and persistent session state
+- **Purpose**: Secure access to inventory data and maintain user sessions across browser refreshes
+- **Trigger**: User visits the application without an active session
+- **Progression**: Application loads → Login screen displayed → User enters credentials → Validation → Access granted → Redirect to inventory dashboard
+- **Success criteria**: Authentication state persists across sessions using useKV, logout clears session, test account (demo/password) works correctly
+
 ### Product Catalog Management
 - **Functionality**: Add, edit, and delete products with details (name, SKU, category, current stock, minimum threshold, unit price)
 - **Purpose**: Maintains a centralized database of all inventory items

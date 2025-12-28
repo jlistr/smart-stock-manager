@@ -11,10 +11,12 @@ import { ProductCard } from '@/components/ProductCard'
 import { ProductForm } from '@/components/ProductForm'
 import { StatsOverview } from '@/components/StatsOverview'
 import { ReorderReport } from '@/components/ReorderReport'
-import { Plus, MagnifyingGlass, Funnel, Package } from '@phosphor-icons/react'
+import { LoginScreen } from '@/components/LoginScreen'
+import { Plus, MagnifyingGlass, Funnel, Package, SignOut } from '@phosphor-icons/react'
 import { toast } from 'sonner'
 
 function App() {
+  const [isAuthenticated, setIsAuthenticated] = useKV<boolean>('user-authenticated', false)
   const [products, setProducts] = useKV<Product[]>('inventory-products', [])
   const [searchQuery, setSearchQuery] = useState('')
   const [categoryFilter, setCategoryFilter] = useState<string>('all')
@@ -127,22 +129,46 @@ function App() {
 
   const existingSkus = productList.map((p) => p.sku)
 
+  const handleLogin = () => {
+    setIsAuthenticated(true)
+    toast.success('Welcome back!', {
+      description: 'Successfully signed in to StockSync',
+    })
+  }
+
+  const handleLogout = () => {
+    setIsAuthenticated(false)
+    toast.success('Signed out', {
+      description: 'You have been logged out successfully',
+    })
+  }
+
+  if (!isAuthenticated) {
+    return <LoginScreen onLogin={handleLogin} />
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <header className="border-b bg-card/50 backdrop-blur-sm sticky top-0 z-10">
         <div className="container mx-auto px-4 md:px-6 py-4">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <Package className="w-8 h-8 text-primary" weight="duotone" />
               <div>
                 <h1 className="text-2xl md:text-3xl font-bold tracking-tight">StockSync</h1>
-                <p className="text-sm text-muted-foreground">Inventory Management</p>
+                <p className="text-sm text-muted-foreground hidden sm:block">Inventory Management</p>
               </div>
             </div>
-            <Button onClick={handleOpenAddForm} size="lg" className="shadow-md">
-              <Plus className="w-5 h-5 md:mr-2" weight="bold" />
-              <span className="hidden md:inline">Add Product</span>
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button onClick={handleOpenAddForm} size="lg" className="shadow-md">
+                <Plus className="w-5 h-5" weight="bold" />
+                <span className="hidden sm:inline ml-2">Add Product</span>
+              </Button>
+              <Button onClick={handleLogout} variant="outline" size="lg">
+                <SignOut className="w-5 h-5" />
+                <span className="hidden md:inline ml-2">Sign Out</span>
+              </Button>
+            </div>
           </div>
         </div>
       </header>
